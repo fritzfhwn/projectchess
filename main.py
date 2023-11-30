@@ -1,5 +1,5 @@
 import json
-
+import re
 from chessdotcom import get_leaderboards, get_titled_players, get_country_players, Client, get_player_profile, \
     get_player_stats, get_player_games_by_month
 from datetime import datetime
@@ -8,10 +8,7 @@ from isocodes import countries
 Client.request_config["headers"]["User-Agent"] = (
     "My Python Application. "
 )
-country_list = []
-
-for country in countries.items:
-    country_list.append({"name": country["name"], "code": country["alpha_2"]})
+country_list = [{"name": country["name"], "code": country["alpha_2"]} for country in countries.items]
 
 
 def check_key(object, key):
@@ -65,6 +62,27 @@ def get_filtered_userstats(user):
     return filtered_object
 
 
+def get_filtered_games(player, year, month):
+    game_list = get_player_games_by_month(player, year, month).json["games"]
+    for game in game_list:
+        for key in game.keys():
+            if key == "end_time":
+                game[key] = date_conversion(game[key])
+        search_for_date = re.search(r'\[Date "(.*?)"', game["pgn"])
+        date = search_for_date.group(1)
+        search_for_opening = re.search(r'\[ECOUrl "(.*?)"', game["pgn"])
+        opening = search_for_opening.group(1)
+        game_moves = re.search(r'\n\n(.*?)\n', game["pgn"])
+        game_moves = game_moves.group(1)
+        cleaned_moves = re.sub(r"\{\[%clk [0-9:.]*\]\}", "", game_moves)
+        cleaned_moves = re.sub(r"\d+\.\.\. ?", "", cleaned_moves)
+        game["pgn"] = {
+            "date": date,
+            "opening": opening[31::],
+            "moves": cleaned_moves}
+    return game_list
+
+
 def filter_periods_from_start_and_end_date(start, end):
     dates = []
     if start <= end <= datetime.now().strftime("%Y-%m"):
@@ -86,7 +104,7 @@ def filter_periods_from_start_and_end_date(start, end):
                 counter_month += 1
             dates.append({"year": counter_year,
                           "months": months_list})
-        return dates
+    return dates
 
 
 def get_games_from_player_by_period(startdate, enddate, player_array):
@@ -95,7 +113,7 @@ def get_games_from_player_by_period(startdate, enddate, player_array):
     for player in player_array:
         for entry in dates:
             for month in entry["months"]:
-                games = get_player_games_by_month(player, entry["year"], month).json["games"]
+                games = get_filtered_games(player, entry["year"], month)
                 games_list.append({"player": player,
                                    "year": entry["year"],
                                    "month": month,
@@ -108,6 +126,12 @@ def get_complete_profile(player_array):
     output = []
     for player in player_array:
         stats_temp = get_filtered_userstats(player)
+        player_details = get_filtered_userdetails(player)
+        player_details["country"] = player_details["country"][34::]
+        for item in country_list:
+            if item["code"] == player_details["country"]:
+                player_details["country"] = item["name"]
+                break
         modes = ["chess_rapid", "chess_blitz", "chess_bullet"]
         categories = ["last", "best"]
         for mode in modes:
@@ -115,8 +139,7 @@ def get_complete_profile(player_array):
                 for category in categories:
                     if check_key(stats_temp[mode], category):
                         stats_temp[mode][category]["date"] = date_conversion(stats_temp[mode][category]["date"])
-                output.append({"details": get_filtered_userdetails(player),
-                               "stats": stats_temp})
+        output.append({"details": player_details,
+                       "stats": stats_temp})
+
     return json.dump(output, open("complete_player_profile_list.json", "w"), indent=6)
-
-
