@@ -68,20 +68,26 @@ def get_filtered_games(player, year, month):
         for key in game.keys():
             if key == "end_time":
                 game[key] = date_conversion(game[key])
-        search_for_date = re.search(r'\[Date "(.*?)"', game["pgn"])
-        date = search_for_date.group(1)
-        search_for_opening = re.search(r'\[ECOUrl "(.*?)"', game["pgn"])
-        opening = search_for_opening.group(1)
-        game_moves = re.search(r'\n\n(.*?)\n', game["pgn"])
-        game_moves = game_moves.group(1)
-        cleaned_moves = re.sub(r"\{\[%clk [0-9:.]*\]\}", "", game_moves)
-        cleaned_moves = re.sub(r"\d+\.\.\. ?", "", cleaned_moves)
-        game["pgn"] = {
-            "date": date,
-            "opening": opening[31::],
-            "moves": cleaned_moves}
+            if key == "pgn":
+                date = ""
+                opening = ""
+                cleaned_moves = ""
+                search_for_date = re.search(r'\[Date "(.*?)"', game[key])
+                if search_for_date:
+                    date = search_for_date.group(1)
+                search_for_opening = re.search(r'\[ECOUrl "(.*?)"', game[key])
+                if search_for_opening:
+                    opening = search_for_opening.group(1)[31::]
+                search_for_game_moves = re.search(r'\n\n(.*?)\n', game[key])
+                if search_for_game_moves:
+                    game_moves = search_for_game_moves.group(1)
+                    cleaned_moves = re.sub(r"\{\[%clk [0-9:.]*\]\}", "", game_moves)
+                    cleaned_moves = re.sub(r"\d+\.\.\. ?", "", cleaned_moves)
+                game[key] = {
+                    "date": date,
+                    "opening": opening,
+                    "moves": cleaned_moves}
     return game_list
-
 
 def filter_periods_from_start_and_end_date(start, end):
     dates = []
@@ -110,6 +116,7 @@ def filter_periods_from_start_and_end_date(start, end):
 def get_games_from_player_by_period(startdate, enddate, player_array):
     dates = filter_periods_from_start_and_end_date(startdate, enddate)
     games_list = []
+    player_counter = 1
     for player in player_array:
         for entry in dates:
             for month in entry["months"]:
@@ -118,8 +125,9 @@ def get_games_from_player_by_period(startdate, enddate, player_array):
                                    "year": entry["year"],
                                    "month": month,
                                    "games": games})
-        print(games_list)
-    json.dump(games_list, open("game_list.json", "w"), indent=6)
+        print(player, player_counter)
+        player_counter += 1
+    json.dump(games_list, open("game_list_2023_fm.json", "w"), indent=6)
 
 
 def get_complete_profile(player_array):
@@ -143,3 +151,5 @@ def get_complete_profile(player_array):
                        "stats": stats_temp})
 
     return json.dump(output, open("complete_player_profile_list.json", "w"), indent=6)
+
+get_games_from_player_by_period("2023-01", "2023-11", fm_players())
