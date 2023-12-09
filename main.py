@@ -127,7 +127,7 @@ def get_games_from_player_by_period(startdate, enddate, player_array):
                                    "games": games})
         print(player, player_counter)
         player_counter += 1
-    json.dump(games_list, open("game_list_2022_fm.json", "w"), indent=6)
+    json.dump(games_list, open("game_list_2023_fm.json", "w"), indent=6)
 
 
 def get_complete_profile(player_array):
@@ -150,9 +150,6 @@ def get_complete_profile(player_array):
         output.append({"details": player_details,
                        "stats": stats_temp})
 
-    return json.dump(output, open("complete_profile_list_gm.json", "w"), indent=6)
+    return json.dump(output, open("complete_player_profile_list.json", "w"), indent=6)
 
-
-get_games_from_player_by_period("2022-01", "2022-12", fm_players())
-
-
+get_games_from_player_by_period("2023-01", "2023-11", fm_players())
