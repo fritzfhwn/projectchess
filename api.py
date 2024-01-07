@@ -59,7 +59,7 @@ class Request:
             return get_player_profile(username).json["player"]
         except Exception as e:
             print(f"Fehler beim Abrufen des Profils von {username}: {e}")
-            return None
+            return {}
 
     @staticmethod
     def get_user_stats(username):
@@ -67,4 +67,4 @@ class Request:
             return get_player_stats(username).json["stats"]
         except Exception as e:
             print(f"Fehler beim Abrufen der Statistiken von {username}: {e}")
-            return None
+            return {}

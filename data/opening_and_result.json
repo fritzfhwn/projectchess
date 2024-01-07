@@ -1,0 +1,34 @@
+{
+    
+    "Flank Opening": [
+        "Nimzowitsch-Larsen-Attack", "Birds-Opening", "Reti-Opening",
+        "English-Opening", "Queens-Pawn-Opening", "Benoni", "Old-Benoni",
+        "Queen's Pawn", "Budapest-Gambit", "Old-Indian-Defense", "Czech Benoni",
+        "Volga-Gambit", "Modern-Benoni", "Dutch-Defense", "Kings-Fianchetto", "Trompowsky-Attack", "Anderssen-Opening", "Polish-Opening", "English-Defense", "Benko-Gambit", "Kings-Indian-Attack", "Englund-Gambit", "Clemenz-Opening", "Mieses-Opening", "Vant-Kruijs-Opening", "Grob-Opening", "Kadas-Opening", "Van-Geet-Opening", "Saragossa-Opening", "Ware-Opening", "London-System", "Wade-Defense", "Barnes-Opening", "Torre-Attack", "Amar-Opening", "Sodium-Attack"
+    ],
+    "Semi-Open": [
+        "Kings-Pawn-Opening", "Scandinavian-Defense", "Alekhines-Defense",
+        "Modern-Defense", "Robatsch Defence", "Pirc-Defense", "Caro-Kann",
+        "Sicilian", "Nimzowitsch-Defense", "Owens-Defense", "Lion-Defense"
+    ],
+    "Open": [
+        "French-Defense", "King's Pawn Game", "Danish-Gambit", "Center-Game",
+        "Bishops-Opening", "Vienna-Game", "Kings-Gambit-Declined", "Kings-Gambit-Accepted", "Kings-Gambit", "Portuguese-Opening",
+        "Latvian Gambit", "Philidor-Defense", "Petrovs-Defense", "Ponziani Opening",
+        "Three-Knights-Game", "Four-Knights-Game", "Italian-Game",
+        "Evans' Gambit", "Giuoco-Piano", "Two Knights' Defence", "Ruy-Lopez", "Ponziani-Opening", "Scotch-Game", "Three-Knights-Opening", "Four-Knights-Opening"
+    ],
+    "Closed and Semi-Closed": [
+        "Queen's Pawn Game", "Colle-System", "Queens-Gambit", "Slav-Defense",
+        "Queens-Gambit-Accepted", "Queens-Gambit-Declined", "Semi-Slav",
+        "Tarrasch-Defense", "Semi-Slav Main Line", "Classical Queen's Gambit Declined",
+        "Grunfeld-Defense", "Richter-Veresov-Attack"
+    ],
+    "Indian Defense": [
+        "Indian-Game", "Catalan-Opening", "Blumenfeld-Countergambit", "Bogo-Indian-Defense",
+        "Queens-Indian-Defense", "Nimzo-Indian-Defense", "Kings-Indian-Defense"
+    ],
+    "Loss": ["resigned", "timeout", "checkmated", "abandoned"],
+    "Draw": ["insufficient", "stalemate", "repetition", "timevsinsufficient", "50move", "agreed"],
+    "Win": ["win"]
+}
