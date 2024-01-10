@@ -338,10 +338,11 @@ def get_streamer_correlation(player_list, mode, size):
     combined_df['Reason'] = np.where(combined_df['Reason'] == 'win', 1, 0)
     combined_df['Streamer'] = combined_df['Streamer'].astype(int)
 
-    r, p_value = stats.pointbiserialr(combined_df['Streamer'], combined_df['Elo'])
+    r, p_value = stats.pointbiserialr(combined_df['Streamer'], combined_df['Reason'])
 
     mean_win_percent_streamer = combined_df[combined_df['Streamer'] == 1]['Reason'].mean()
     mean_win_percent_non_streamer = combined_df[combined_df['Streamer'] == 0]['Reason'].mean()
+
     fig, ax = plt.subplots()
     positions = [0, 1]
     heights = [mean_win_percent_non_streamer, mean_win_percent_streamer]
@@ -380,4 +381,5 @@ def win_rate_accuracy_scatterplot(player_list):
     sns.regplot(x='Win %', y='Accuracy', data=df, ax=ax)
 
     ax.set_xlim([10, 90])
+    ax.set_ylim([75, 90])
     return fig

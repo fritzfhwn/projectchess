@@ -15,6 +15,7 @@ matplotlib = "*"
 altair = "*"
 seaborn = "*"
 scipy = "*"
+"chess.com" = "*"
 
 [dev-packages]
 
