@@ -16,6 +16,7 @@ altair = "*"
 seaborn = "*"
 scipy = "*"
 "chess.com" = "*"
+chess = "*"
 
 [dev-packages]
 

@@ -1,28 +1,24 @@
-import json
-
 import streamlit as st
 import altair as alt
-import api
-import dataframes
-import utils
-import pandas as pd
+from pickle_loaders import DataImporter
+from data_visualizer import Visualizer
 
 
 def main():
     try:
-        df = dataframes.load_im_elo_progression_blitz()
-        st_correlation = utils.get_streamer_correlation(dataframes.load_im_individual_2023(),
+        df = DataImporter.load_elo_progression("im", "blitz")
+        st_correlation = Visualizer.get_streamer_correlation(DataImporter.load_data("im", 2023, "individual"),
                                                         "blitz", 3000)
-        gm_loss = utils.plot_result_reasons(dataframes.load_gm_individual_2023(), "bullet", "loss")
-        gm_draw = utils.plot_result_reasons(dataframes.load_gm_individual_2023(), "bullet", "draw")
+        gm_loss = Visualizer.plot_result_reasons(DataImporter.load_data("gm", 2023, "individual"), "bullet", "loss")
+        gm_draw = Visualizer.plot_result_reasons(DataImporter.load_data("gm", 2023, "individual"), "bullet", "draw")
 
-        gm_opening_results = dataframes.load_gm_opening_results_2023_bullet()
-        fm_opening_results = dataframes.load_fm_opening_results_2023_bullet()
+        gm_opening_results = DataImporter.load_opening_results("gm", "bullet", 2023)
+        fm_opening_results = DataImporter.load_opening_results("fm", "bullet", 2023)
 
-        gm_scatterplot = utils.win_rate_accuracy_scatterplot(dataframes.load_gm_individual_2023())
-        fm_scatterplot = utils.win_rate_accuracy_scatterplot(dataframes.load_fm_individual_2023())
+        gm_scatterplot = Visualizer.win_rate_accuracy_scatterplot(DataImporter.load_data("gm", 2023, "individual"))
+        fm_scatterplot = Visualizer.win_rate_accuracy_scatterplot(DataImporter.load_data("fm", 2023, "individual"))
 
-        st.title('International Masters Elo Ratings Over Time')
+        st.title('International Masters Elo Ratings in Blitz Over Time')
 
         players = st.multiselect("Choose players", df["Player"].unique(), ["gothamchess", "anna_chess", "imrosen"])
         if not players:
@@ -69,10 +65,10 @@ def main():
                 st.markdown(f"**P-Wert:** `{st_correlation[2]:.3f}`")
 
                 st.markdown("""
-                *Leichte positive Korrelation mit statistischer Signifikanz.*
+                *Leichte positive Korrelation.*
                 """)
 
-            st.title("Opening Categories and Result: GM vs FM")
+            st.title("Opening Categories and Result in Bullet: GM vs FM")
             left, col7, right = st.columns([2, 2, 2])
 
             with left:
@@ -85,12 +81,30 @@ def main():
                 st.write(gm_opening_results[2])
                 st.write(fm_opening_results[2])
 
-            st.title("Correlation of Accuracy and Win %: GM vs FM")
+            st.title("Correlation of Accuracy and Win % in Blitz: GM vs FM")
             col11, col12 = st.columns(2)
             with col11:
-                st.pyplot(gm_scatterplot)
+                st.pyplot(gm_scatterplot[0])
             with col12:
-                st.pyplot(fm_scatterplot)
+                st.pyplot(fm_scatterplot[0])
+
+            veryleft, left, col13, right = st.columns([1, 1, 2, 1])
+
+            with left:
+                st.write(gm_scatterplot[1].round(2))
+                st.write(gm_scatterplot[2].round(2))
+                st.write(gm_scatterplot[3].round(2))
+                st.write(gm_scatterplot[4].round(2))
+            with col13:
+                st.markdown(f"**Win % - Standardabweichung**")
+                st.markdown(f"**Win % - Mittelwert**")
+                st.markdown(f"**Accuracy - Standardabweichung**")
+                st.markdown(f"**Accuracy - Mittelwert**")
+            with right:
+                st.write(fm_scatterplot[1].round(2))
+                st.write(fm_scatterplot[2].round(2))
+                st.write(fm_scatterplot[3].round(2))
+                st.write(fm_scatterplot[4].round(2))
 
 
     except Exception as e:
